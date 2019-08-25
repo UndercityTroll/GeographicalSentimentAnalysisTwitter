@@ -43,11 +43,11 @@ def getvalue():
     locationData = {}
 
     # Step 1 - Authenticate
-    consumer_key = 'CONSUMER KEY GOES HERE'
-    consumer_secret = 'CONSUMER SECRET GOES HERE'
+    consumer_key = 'trQYqDIHXeSqT8AYeG1UpsVUp'
+    consumer_secret = 'tM0ygZ3J92jOkFXi3t82sWe4dbqd0jW5iRTkgOslWNoInT2f43'
 
-    access_token = 'ACCESS TOKEN GOES HERE'
-    access_token_secret = 'ACCESS TOKEN SECRET GOES HERE'
+    access_token = '1158448526809976832-QS2q0vXmJCILCwtLVdEGleeAlLiRAS'
+    access_token_secret = '9GXgKbOAGPzIuaM4OKdl1Jif3hpiqz7pDTktsMCGTdLJL'
 
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
@@ -56,23 +56,20 @@ def getvalue():
     # Specifics for Folium Map API
 
     m = folium.Map(location=[38.8283, -96.500], zoom_start=5)
-    tooltip = "Click for More Info"
 
     # Step 2 - Specifics of Data
 
     # Step 3 - Tweet Analysis
     for tweet in tweepy.Cursor(api.search, q=hashtag_phrase + ' -filter:retweets').items(length):
         locat = tweet.author.location
-        print(locat, is_ascii(locat))
         if locat is "US" or locat is "USA" or locat is "U.S." or locat is "U.S.A" or locat is "America" or locat is "States":
             locat = "United States"
         if is_ascii(locat):
             # Uses Mapquest API to get information on location
-            url = "http://www.mapquestapi.com/geocoding/v1/address?key=MAPQUESTKEYGOESHERE&location=" + locat
+            url = "http://www.mapquestapi.com/geocoding/v1/address?key=UE9w9oAyK1iOSk7n5CsG4ZjAdO0fKLor&location=" + locat
             response = urllib.urlopen(url)
             data = json.loads(response.read())
             if not data['info']["messages"]:
-                print("no errors")
                 # Step 4 - Finds the Lat and Lon from the Mapquest API
                 latitude = data["results"][0]["locations"][0]["latLng"]["lat"]
                 longitude = data["results"][0]["locations"][0]["latLng"]["lng"]
@@ -84,18 +81,15 @@ def getvalue():
                 sentiment = analysis.sentiment.polarity
                 ExistingLocation = False
                 for item in locationData:
-                    if item == locat:
+                    if locationData[item]['latitude'] == latitude and locationData[item]['longitude'] == longitude:
                         locationData[item]['count'] += 1
                         locationData[item]['sentiment'] = (
                                     ((locationData[item]['sentiment'] * locationData[item]['count'])
                                      + sentiment) / locationData[item]['count'])
                         ExistingLocation = True
-                        print("old tweet")
                 if not ExistingLocation:
                     locationData[locat] = {'latitude': latitude, 'longitude': longitude, 'tweet': tweet.text,
-                                           'count': 1,
-                                           'sentiment': sentiment}
-                    print("new tweet")
+                                           'count': 1, 'sentiment': sentiment}
 
     # Step 4 - Generate Map
     def rgbtohex(valuer, valueg, valueb):
@@ -112,15 +106,12 @@ def getvalue():
             # convert sentiment to hexidecimal gradient
             location=[locationData[item]['latitude'], locationData[item]['longitude']],
             radius=5 * math.sqrt(locationData[item]['count']),
-            popup=locationData[item]['tweet'],
+            popup= locationData[item]['tweet'],
             color=sentimentHex,
             fill=False,
-            fill_color=sentimentHex
+            fill_color=sentimentHex,
         ).add_to(m)
-
-    m.save('templates/NewMap.html')
-
-    # Printing Done
+        m.save('templates/NewMap.html')
     print("You have finally reached the end")
 
     return render_template('NewMap.html')
