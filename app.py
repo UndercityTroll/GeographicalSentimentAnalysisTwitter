@@ -43,11 +43,11 @@ def getvalue():
     locationData = {}
 
     # Step 1 - Authenticate
-    consumer_key = 'trQYqDIHXeSqT8AYeG1UpsVUp'
-    consumer_secret = 'tM0ygZ3J92jOkFXi3t82sWe4dbqd0jW5iRTkgOslWNoInT2f43'
+    consumer_key = 'CONSUMER KEY'
+    consumer_secret = 'CONSUMER SECRET'
 
-    access_token = '1158448526809976832-QS2q0vXmJCILCwtLVdEGleeAlLiRAS'
-    access_token_secret = '9GXgKbOAGPzIuaM4OKdl1Jif3hpiqz7pDTktsMCGTdLJL'
+    access_token = 'ACCESS TOKEN'
+    access_token_secret = 'ACCESS TOKEN SECRET'
 
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
@@ -66,7 +66,7 @@ def getvalue():
             locat = "United States"
         if is_ascii(locat):
             # Uses Mapquest API to get information on location
-            url = "http://www.mapquestapi.com/geocoding/v1/address?key=UE9w9oAyK1iOSk7n5CsG4ZjAdO0fKLor&location=" + locat
+            url = "http://www.mapquestapi.com/geocoding/v1/address?key=MAPQUEST-KEY-GOES-HERE&location=" + locat
             response = urllib.urlopen(url)
             data = json.loads(response.read())
             if not data['info']["messages"]:
@@ -118,3 +118,5 @@ def getvalue():
 
 if __name__ == '__main__':
     app.run(debug=True)
+    
+ #This code was written completely by Vikram Murugan
